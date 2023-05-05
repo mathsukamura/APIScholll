@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\Scholl.props" />
+</Project>
