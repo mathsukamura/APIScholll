@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Scholl.Helpers;
 using Scholl.ProfessorViewModel;
 using Scholl.Services.registradorProfessor.Interfaces;
 using Scholl.Services.RegistradorProfessor;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace Scholl.Controllers
 {
+    [AuthorizeUrl("cadastroprofessor")]
     public class CrudProfessorController : Controller
     {
         private readonly ICriarProfessorService _criarProfessorService;
@@ -28,7 +30,7 @@ namespace Scholl.Controllers
             _alterarProfessorService = alterarProfessorService;
         }
 
-        [HttpGet("professor")]
+        [HttpGet("api/v1/professor")]
         public async Task<IActionResult> GetAsync()
         {
             var professor = await _buscarProfessoresService.GetAsync();
@@ -36,7 +38,7 @@ namespace Scholl.Controllers
             return Ok(professor);
         }
 
-        [HttpGet("professor/{id}")]
+        [HttpGet("api/v1/professor/{id}")]
         public async Task<IActionResult> GetByIdAsync(
         [FromRoute] int id)
         {
@@ -45,7 +47,7 @@ namespace Scholl.Controllers
             return professor == null ? NotFound() : Ok(professor);
         }
 
-        [HttpPost("professor")]
+        [HttpPost("api/v1/professor")]
         public async Task<IActionResult> PostAsync([FromBody] CreateProfessorViewModels model)
         {
             ProfessorValidador validator = new ProfessorValidador();
@@ -62,7 +64,7 @@ namespace Scholl.Controllers
             return Created($"v1/professor/{professor.Id}", new { professor.Id });
         }
 
-        [HttpPut("professor/{Id}")]
+        [HttpPut("api/v1/professor/{Id}")]
         public async Task<IActionResult> PutAsync(
             [FromBody] CreateProfessorViewModels model,
             [FromRoute] int id)
@@ -82,7 +84,7 @@ namespace Scholl.Controllers
             return Ok(professor);
         }
 
-        [HttpDelete("professor/{Id}")]
+        [HttpDelete("api/v1/professor/{Id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] int id)
         {
             var success = await _deleteProfessorService.DeleteAsync(id);

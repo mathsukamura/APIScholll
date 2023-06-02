@@ -7,22 +7,22 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Scholl.Services.RegistrarAvaliacao.Interfaces
 {
-    public interface ICriarAvalicaoService
-    {
-        Task<Avaliacao> PostAsync(CreateAvaliacaoViewModel model);
-    };
-    public interface IDeleteAvaliacaoService 
-    {
-        Task <bool> DeleteAsync( CreateAvaliacaoViewModel model, int id);
-    }
     public interface IBuscarAvaliacaoService
     {
         Task <List<Avaliacao>> GetAsync();
         Task <Avaliacao> GetByIdAsync(int id);
     }
+    public interface ICriarAvalicaoService
+    {
+        Task<Avaliacao> PostAsync(CreateAvaliacaoViewModel model);
+    };
     public interface IAlterarAvalicaoService 
     {
-        Task<Avaliacao> PutAsync(CreateAvaliacaoViewModel model, [FromRoute] int id);
+        Task<Avaliacao> PutAsync(int id, CreateAvaliacaoViewModel model);
+    }
+    public interface IDeleteAvaliacaoService 
+    {
+        Task <bool> DeleteAsync(int id);
     }
     
 }

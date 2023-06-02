@@ -5,6 +5,7 @@ using Scholl.AlunoTurmamodel;
 using Scholl.Models.Enums;
 using Scholl.AvaliacaoModel;
 using Scholl.Models;
+using Scholl.HistoricoModel;
 
 namespace Scholl.AlunoModel
 {
@@ -18,6 +19,7 @@ namespace Scholl.AlunoModel
         public ICollection<AlunoTurma> AlunosTurmas { get; set; }
         public ICollection<AvaliacaoNota> NotasAvaliacao { get; set; }
         public ICollection<AlunoPresenca> Presencas { get; set; }
+        public ICollection<Historico> Historico { get; set; }
 
     }
 

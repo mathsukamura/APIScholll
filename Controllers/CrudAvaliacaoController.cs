@@ -5,10 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Scholl.Data;
 using Scholl.Services.registradorProfessor.Interfaces;
+using Scholl.Helpers;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Scholl.Controllers
 {
     [ApiController]
+    [AuthorizeUrl("avaliacao")]
     public class AvaliacaoController : ControllerBase
     {
         private readonly ICriarAvalicaoService _criarAvaliacaoService;
@@ -26,20 +30,20 @@ namespace Scholl.Controllers
         {
             _criarAvaliacaoService = criarAvaliacaoService;
             _alterarAvalicaoService = alterarAvalicaoService;
-            _deleteAvaliacaoService= deleteAvaliacaoService;
+            _deleteAvaliacaoService = deleteAvaliacaoService;
             _buscarAvaliacoesService = buscarAvaliacoesService;
             _buscarAvaliacaoService = buscarAvaliacaoService;
         }
+        [HttpGet("/api/v1/avaliacao")]
 
-        [HttpGet("avaliacao")]
         public async Task<IActionResult> GetAsync()
         {
             var avaliacao = await _buscarAvaliacoesService.GetAsync();
 
             return Ok(avaliacao);
         }
+        [HttpGet("/api/v1/avaliacao/{id}")]
 
-        [HttpGet("avaliacao/{id}")]
         public async Task<IActionResult> GetByIdAsync(int id)
         {
             var avaliacao = await _buscarAvaliacaoService.GetByIdAsync(id);
@@ -47,26 +51,27 @@ namespace Scholl.Controllers
             return avaliacao == null ? NotFound() : Ok(avaliacao);
         }
 
-        [HttpPost("avaliacao")]
-        //[Authorize(Roles = "Professor")]
+        [HttpPost("/api/v1/avaliacao")]
+
         public async Task<IActionResult> PostAsync([FromBody] CreateAvaliacaoViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-
+           
             var result = await _criarAvaliacaoService.PostAsync(model);
 
             return Ok(result);
         }
 
-        [HttpPut("avaliacao/{id}")]
-        //[Authorize(Roles = "Professor")]
-        public async Task<IActionResult> PutAsync([FromBody] CreateAvaliacaoViewModel model, int id)
+        [HttpPut("/api/v1/avaliacao/{id}")]
+
+        public async Task<IActionResult> PutAsync(int id, [FromBody] CreateAvaliacaoViewModel model)
         {
-            var result = await _alterarAvalicaoService.PutAsync(model, id);
+            var idUsuario = int.Parse(User.FindFirstValue(JwtRegisteredClaimNames.Sid));
+
+            var result = await _alterarAvalicaoService.PutAsync(id, model);
 
             if (result == null)
             {
@@ -76,11 +81,10 @@ namespace Scholl.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("avaliacao/{id}")]
-        //[Authorize(Roles = "Professor")]
-        public async Task<IActionResult> DeleteAsync([FromBody] CreateAvaliacaoViewModel model, [FromRoute]int id) 
+        [HttpDelete("/api/v1/avaliacao/{id}")]
+        public async Task<IActionResult> DeleteAsync(int id) 
         {
-            var success = await _deleteAvaliacaoService.DeleteAsync(model, id);
+            var success = await _deleteAvaliacaoService.DeleteAsync(id);
 
             if (!success)
             {

@@ -10,12 +10,27 @@ namespace Scholl.Data.Map
         {
             builder.HasKey(x => x.Id);
 
-            builder.ToTable("usuario");
+            builder.ToTable("tb_usuario");
+
+            builder.Property(s => s.Email)
+                .HasColumnName("email")
+                .IsRequired()
+                .HasColumnType("Varchar(64)");
+
+            builder.Property(s => s.Senha)
+                .HasColumnName("senha")
+                .IsRequired()
+                .HasColumnType("Varchar(24)");
 
             builder.Property(s => s.Name)
                 .HasColumnName("name")
-                .IsRequired()
+                .IsRequired()   
                 .HasColumnType("Varchar(24)");
+
+            builder.Property(s => s.Sexo)
+                .HasColumnName("Sexo")
+                .IsRequired()
+                .HasColumnType("int");
 
             builder.HasOne(a => a.Perfil)
                 .WithMany(p => p.Usuarios)
@@ -24,7 +39,19 @@ namespace Scholl.Data.Map
             builder.Property(a => a.DataCadastro)
                 .HasColumnName("data_cadastro")
                 .IsRequired()
-                .HasColumnType("DateTime");
+                .HasColumnType("timestamp");
+
+            builder.Property(s => s.DataNascimento)
+                .HasColumnName("Data_Nascimento")
+                .IsRequired()
+                .HasColumnType("timestamp");
+
+            builder.Property(a => a.Eprofessor)
+                .HasColumnName("e_professor")
+                .IsRequired()
+                .HasColumnType("int");
+
+
         }
     }
 }

@@ -8,13 +8,13 @@ namespace Scholl.ViewModels
     public class CreateAvaliacaoNota
     {
         [Required]
-        public int Id { get; set; }
         public int IdAluno { get; set; }
-        public Aluno Aluno { get; set; }
+        //public Aluno Aluno { get; set; }
         [Required]
         public int IdAvaliacao { get; set; }
-        public Avaliacao Avaliacao { get; set; }
-        public float Nota { get; set; }
+        //public Avaliacao Avaliacao { get; set; }
+        [Required]
+        public double Nota { get; set; }
         public DateTime DataRealizacao { get; set; } = DateTime.Now;
 
         public AvaliacaoNota ToEntity()
@@ -22,13 +22,11 @@ namespace Scholl.ViewModels
             return new AvaliacaoNota 
             {
                 IdAluno = IdAluno,
-                Aluno = Aluno,
-                Avaliacao = Avaliacao,
+                //Aluno = Aluno,
+                //Avaliacao = Avaliacao,
                 IdAvaliacao= IdAvaliacao,
                 Nota= Nota,
                 DataRealizacao= DataRealizacao,
-
-
             };   
         }
     }

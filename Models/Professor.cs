@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Scholl.ProfessorTurmamodel;
 using Scholl.Models.Enums;
 using Scholl.AvaliacaoModel;
+using Scholl.Models;
 
 namespace Scholl.ProfessorModel
 {
@@ -16,6 +17,9 @@ namespace Scholl.ProfessorModel
         public DateTime DataNascimento { get; set; }
         public ICollection<ProfessorTurma> professorTurma { get; set; }
         public ICollection<Avaliacao> Avaliacoes { get; set; }
+        public int IdUsuario { get; set; }
+        public Usuario Usuario { get; set; }
+
     }
 
 }

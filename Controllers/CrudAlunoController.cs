@@ -7,9 +7,12 @@ using Scholl.AlunoModel;
 using Scholl.Services.Alunos;
 using Microsoft.EntityFrameworkCore;
 using Scholl.Services.RegistradorAluno.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Scholl.Helpers;
 
 namespace Scholl.CadastroAlunoControlller
 {
+    [AuthorizeUrl("cadastroaluno")]
     public class CrudAlunoController : ControllerBase
     {
         private readonly IBuscarAlunoService _buscarAlunoService;
@@ -31,7 +34,8 @@ namespace Scholl.CadastroAlunoControlller
             _alterarAlunoService = alterarAlunoService;
         }
         
-        [HttpGet("alunos")]
+        [HttpGet("api/v1/alunos")]
+        //[Authorize(Policy = "Get")]
         public async Task<IActionResult> GetAsync()
             {
             var alunos = await _buscarAlunoService.GetAsync();
@@ -39,7 +43,8 @@ namespace Scholl.CadastroAlunoControlller
             return Ok(alunos);
             }
 
-        [HttpGet("alunos/{id}")]
+        [HttpGet("api/v1/alunos/{id}")]
+        //[Authorize(Policy = "Get")]
         public async Task<IActionResult> GetByIdAsync(
             [FromRoute] int id)
             {
@@ -48,7 +53,8 @@ namespace Scholl.CadastroAlunoControlller
             return aluno == null ? NotFound() : Ok(aluno);
             }
         
-        [HttpPost("alunos")]
+        [HttpPost("api/v1/alunos")]
+        //[Authorize(Policy = "Post")]
         public async Task<IActionResult> PostAsync([FromBody] CreateAlunoViewModels model)
         {
             AlunoValidator validator = new AlunoValidator();
@@ -65,7 +71,8 @@ namespace Scholl.CadastroAlunoControlller
             return Created($"v1/alunos/{aluno.Id}", new { aluno.Id });
         }
         
-        [HttpPut("alunos/{id}")]
+        [HttpPut("api/v1/alunos/{id}")]
+        //[Authorize(Policy = "Put")]
         public async Task<IActionResult> PutAsync(
            [FromBody] CreateAlunoViewModels model,
            [FromRoute] int id)
@@ -85,7 +92,8 @@ namespace Scholl.CadastroAlunoControlller
             return Ok(aluno);
         }
         
-        [HttpDelete("alunos/{id}")]
+        [HttpDelete("api/v1/alunos/{id}")]
+        //[Authorize(Policy = "Delete")]
         public async Task<IActionResult> DeleteAsync([FromRoute] int id)
         {
             var success = await _deleteAlunoService.DeleteAsync(id);

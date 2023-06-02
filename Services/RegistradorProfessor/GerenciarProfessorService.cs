@@ -69,8 +69,8 @@ namespace Scholl.Services.registradorProfessor
             return professor;
         }
         public async Task<Professor> PutAsync(
-            [FromBody] CreateProfessorViewModels model,
-            [FromRoute] int id)
+            CreateProfessorViewModels model,
+            int id)
         {
             var professor = await _context
                 .Professores

@@ -23,7 +23,7 @@ namespace Scholl.Data.Map
             builder.Property(s => s.Nota)
                 .HasColumnName("nota")
                 .IsRequired()
-                .HasColumnType("float");
+                .HasColumnType("double precision");
 
             builder.Property(s => s.DataRealizacao)
                 .HasColumnName("data_registro")

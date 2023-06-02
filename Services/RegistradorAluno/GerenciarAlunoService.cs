@@ -43,7 +43,7 @@ namespace Scholl.Services.Alunos
                 Nome = model.Nome,
                 DataNascimento = DateTime.Now,
                 DataRegistro = DateTime.Now,
-                Sexo = 0,
+                Sexo = model.Sexo,
             };
 
             await _context.Alunos.AddAsync(aluno);

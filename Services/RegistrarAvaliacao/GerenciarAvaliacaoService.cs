@@ -5,9 +5,12 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Scholl.AvaliacaoModel;
 using Scholl.AvaliacaoViewModel;
 using Scholl.Data;
+using Scholl.Models;
 using Scholl.ProfessorModel;
 using Scholl.Services.RegistrarAvaliacao.Interfaces;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,19 +20,67 @@ namespace Scholl.Services.RegistrarAvaliacao
     {
 
         private readonly AppDbcontext _context;
+        private readonly IUserService _userService;
 
-        public GerenciarAvaliacaoService(AppDbcontext context) => _context = context;
+        public GerenciarAvaliacaoService(IUserService userService, AppDbcontext context)
+        {
+            _userService = userService;
+            _context = context;
+        }
+
+        public async Task<List<Avaliacao>> GetAsync() 
+        {
+            var idUsuario = _userService.ObterUsuarioId();
+
+            var professor = await _context.Professores.FirstOrDefaultAsync(p => p.IdUsuario == idUsuario);
+
+            if (professor == null)
+            {
+                return null;
+            }
+
+            var avaliacoes = await _context.Avaliacoes
+                .Where(a => a.Professor.Id == professor.Id) 
+                .AsNoTracking()
+                .ToListAsync();
+
+            return avaliacoes;
+        }
+
+        public async Task<Avaliacao> GetByIdAsync(int id) 
+        {
+            var idUsuario = _userService.ObterUsuarioId();
+
+            var professor = await _context.Professores.FirstOrDefaultAsync(p => p.IdUsuario == idUsuario);
+
+            if (professor == null)
+            {
+                return null;
+            }
+
+            var avaliacao = await _context.Avaliacoes
+                .Where(a => a.Professor.Id == professor.Id && a.Id == id) 
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            return avaliacao;
+        }
 
         public async Task<Avaliacao> PostAsync(CreateAvaliacaoViewModel model) 
         {
-            var professor = await _context.Professores.FindAsync(model.IdProfessor);
+            var idUsuario = _userService.ObterUsuarioId();
 
+            var professor = await _context.Professores.FirstOrDefaultAsync(p => p.IdUsuario == idUsuario);
+            
             if (professor == null)
             {
                 return null; 
             }
             
             var avaliacao = model.ToEntity();
+
+            avaliacao.IdProfessor = professor.Id;
+
 
             await _context.Avaliacoes.AddAsync(avaliacao);
 
@@ -38,7 +89,7 @@ namespace Scholl.Services.RegistrarAvaliacao
             return avaliacao;
         }
 
-        public async Task<Avaliacao> PutAsync(CreateAvaliacaoViewModel model, int id) 
+        public async Task<Avaliacao> PutAsync(int id, CreateAvaliacaoViewModel model) 
         {
             var avaliacao = await _context.Avaliacoes.FindAsync(id);
 
@@ -47,7 +98,11 @@ namespace Scholl.Services.RegistrarAvaliacao
                 return null;
             }
 
-            if (avaliacao.IdProfessor != model.IdProfessor)
+            var idUsuario = _userService.ObterUsuarioId();
+
+            var professor = await _context.Professores.FirstOrDefaultAsync(p => p.IdUsuario == idUsuario);
+
+            if (avaliacao.IdProfessor != professor.Id)
             {
                 return null;
             }
@@ -59,15 +114,20 @@ namespace Scholl.Services.RegistrarAvaliacao
             return avaliacao;
         }
 
-        public async Task<bool> DeleteAsync( CreateAvaliacaoViewModel model, int id) 
+        public async Task<bool> DeleteAsync(int id) 
         {
-            var avaliacao =await _context.Avaliacoes.FirstOrDefaultAsync(x => x.Id == id);
+            var avaliacao = await _context.Avaliacoes.FirstOrDefaultAsync(x => x.Id == id);
 
             if(avaliacao == null) 
             {
                 return false;
             }
-            if (avaliacao.IdProfessor != model.IdProfessor)
+
+            var idUsuario = _userService.ObterUsuarioId();
+
+            var professor = await _context.Professores.FirstOrDefaultAsync(p => p.IdUsuario == idUsuario);
+
+            if (avaliacao.IdProfessor != professor.Id)
             {
                 return false;
             }
@@ -77,19 +137,6 @@ namespace Scholl.Services.RegistrarAvaliacao
             await _context.SaveChangesAsync();
 
             return true;
-        }
-
-        public async Task<List<Avaliacao>> GetAsync() 
-        {
-            var avaliacao = await _context.Avaliacoes.AsNoTracking().ToListAsync();
-
-            return avaliacao;
-        }
-        public async Task<Avaliacao> GetByIdAsync(int id) 
-        {
-            var avaliacao = await _context.Avaliacoes.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-
-            return avaliacao;
         }
     }
 }

@@ -10,8 +10,6 @@ public class CreateAvaliacaoViewModel
     [Required]
     public int Id { get; set; }
     public string Descricao { get; set; }
-    [Required]
-    public int IdProfessor { get; set; }
     public DateTime DataAplicacao { get; set; }
     public EBimestre Bimestre { get; set; }
 
@@ -20,7 +18,6 @@ public class CreateAvaliacaoViewModel
         return new Avaliacao
         {
             Descricao = Descricao,
-            IdProfessor = IdProfessor,
             Bimestre = Bimestre,
             DataAplicacao = DataAplicacao
         };

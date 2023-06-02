@@ -34,8 +34,12 @@ class ProfessorEntityTypeConfiguration : IEntityTypeConfiguration<Professor>
                 .IsRequired()
                 .HasColumnType("timestamp");
 
+        builder.HasOne(p => p.Usuario)
+               .WithOne(u => u.Professor)
+               .HasForeignKey<Professor>(p => p.IdUsuario);
+
         builder.HasMany<ProfessorTurma>(a => a.professorTurma)
-        .WithOne(at => at.Professor)
-        .HasForeignKey(at => at.IdProfessor);
+                .WithOne(at => at.Professor)
+                .HasForeignKey(at => at.IdProfessor);
     }
 }
